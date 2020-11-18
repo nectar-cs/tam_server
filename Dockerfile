@@ -12,8 +12,8 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get install -y nodejs git
 RUN npm install --global release-it
 
-RUN git config --global user.email "iljamoisejevs@gmail.com"
-RUN git config --global user.name "ilmoi"
+RUN git config --global user.email "xavier@codenectar.com"
+RUN git config --global user.name "xavier"
 
 COPY . /app/
 

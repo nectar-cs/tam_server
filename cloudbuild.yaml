@@ -5,8 +5,8 @@ steps:
     waitFor: []
     args:
       - '-c'
-      - 'gcloud secrets versions access latest --secret=ilja-gh-token > gh-token.txt;
-         gcloud secrets versions access latest --secret=ilja-id-rsa2 > id_rsa;
+      - 'gcloud secrets versions access latest --secret=nectl-gh-token > gh-token.txt;
+         gcloud secrets versions access latest --secret=gh-ssh > id_rsa;
          chmod 400 id_rsa;
          echo $TAG_NAME;
       '

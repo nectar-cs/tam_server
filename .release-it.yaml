@@ -10,5 +10,5 @@ git:
 
 github:
   release: true
-  assets: ["nectl_nix.tar.gz"]
+  assets: ["tam_server.tar.gz"]
   skipChecks: true
