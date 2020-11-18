@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['/home/xavier/workspace/nectarines/tam-server'],
+             pathex=['/home/xavier/workspace/tam_server'],
              binaries=[],
              datas=[],
              hiddenimports=[],

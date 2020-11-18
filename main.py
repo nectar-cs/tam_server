@@ -83,4 +83,5 @@ def template():
 
 
 app.config["cmd"] = ["bash"]
+print(f"[tam_server:server] starting with tam exec '{executable}'")
 app.run(host='0.0.0.0', port=5005, debug=True)
