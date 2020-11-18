@@ -1,0 +1,32 @@
+steps:
+  - id: "Fetch Github Token"
+    name: "gcr.io/cloud-builders/gcloud"
+    entrypoint: 'bash'
+    waitFor: []
+    args:
+      - '-c'
+      - 'gcloud secrets versions access latest --secret=ilja-gh-token > gh-token.txt;
+         gcloud secrets versions access latest --secret=ilja-id-rsa2 > id_rsa;
+         chmod 400 id_rsa;
+         echo $TAG_NAME;
+      '
+  - id: "Build Releaser Image"
+    waitFor: []
+    name: 'gcr.io/cloud-builders/docker'
+    args:
+      - "build"
+      - "."
+      - "-t"
+      - "releaser"
+  - id: "Package & Release"
+    name: 'gcr.io/cloud-builders/docker'
+    waitFor:
+      - "Fetch Github Token"
+      - "Build Releaser Image"
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - 'docker run
+         --env GITHUB_TOKEN="$(cat gh-token.txt)"
+         releaser
+        '

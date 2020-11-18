@@ -1,0 +1,14 @@
+git:
+  commit: false
+  tag: false
+  push: false
+  requireBranch: false
+  requireCommits: false
+  requireUpstream: false
+  changeLog: null
+  requireCleanWorkingDir: false
+
+github:
+  release: true
+  assets: ["nectl_nix.tar.gz"]
+  skipChecks: true
