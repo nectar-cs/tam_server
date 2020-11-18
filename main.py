@@ -2,6 +2,7 @@ import os
 import random
 import string
 import subprocess
+import traceback
 from typing import Dict, List
 
 import yaml
@@ -14,10 +15,15 @@ executable = os.environ.get('TAM_CMD', 'tam-eval')
 
 def exec_cmd(command: str) -> str:
   split_cmd = [v for v in command.split(" ") if v]
-  return subprocess.check_output(
-    split_cmd,
-    stderr=subprocess.STDOUT
-  ).decode('utf-8')
+  try:
+    return subprocess.check_output(
+      split_cmd,
+      stderr=subprocess.STDOUT
+    ).decode('utf-8')
+  except subprocess.CalledProcessError:
+    print(traceback.format_exc())
+    print(f"[tam_server:server] call to {executable} failed ^^")
+    return ''
 
 
 def exec_yaml_cmd(command: str) -> Dict:
@@ -57,7 +63,7 @@ def values():
 @app.route('/simple_template')
 def simple_template():
   release_name = request.args.get('release_name', '')
-  res_dicts = exec_yamls_cmd(f"{executable} template {release_name}")
+  res_dicts = exec_yamls_cmd(f"{executable} template {release_name} .")
   print(res_dicts)
   return jsonify(data=res_dicts)
 
