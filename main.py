@@ -39,42 +39,21 @@ def rand_str(string_len=10):
   return ''.join(random.choice(letters) for i in range(string_len))
 
 
-def fmt_inlines(assignments: Dict) -> str:
-  expr_array = []
-  for assignment in list(assignments.items()):
-    key_expr, value = assignment
-    expr_array.append(f"--set {key_expr}={value}")
-  return " ".join(expr_array)
-
-
-@app.route('/simple_values')
-def simple_values():
-  values_dict = exec_yaml_cmd(f"{executable} values")
-  return jsonify(data=values_dict)
-
-
-@app.route('/values', methods=['POST'])
+@app.route('/values')
 def values():
-  flags = request.json.get('flags')
-  values_dict = exec_yaml_cmd(f"{executable} values {flags}")
+  values_dict = exec_yaml_cmd(f"{executable} values {fmt_cmd_args()}")
   return jsonify(data=values_dict)
 
 
 @app.route('/template', methods=['POST'])
 def template():
-  attrs = request.json
-  assignments = attrs.get('assignments', {})
-  inlines = attrs.get('inlines', {})
-  flags = attrs.get('flags')
-  release_name = request.args.get('release_name', '')
-
   tmp_file_name = f"/tmp/values-{rand_str(20)}"
 
   with open(tmp_file_name, 'w') as file:
-    file.write(yaml.dump(assignments))
+    file.write(yaml.dump(request.json or {}))
 
-  args = f"-f {tmp_file_name} {fmt_inlines(inlines)} {flags}"
-  res_dicts = exec_yamls_cmd(f"{executable} template {release_name} {args}")
+  full_cmd = f"{compile_template_cmd()} -f {tmp_file_name}"
+  res_dicts = exec_yamls_cmd(full_cmd)
   os.remove(tmp_file_name)
 
   return jsonify(data=res_dicts)
@@ -82,11 +61,19 @@ def template():
 
 @app.route('/')
 def simple_template():
-  release_name = request.args.get('release_name', '')
-  res_dicts = exec_yamls_cmd(f"{executable} template {release_name} .")
+  res_dicts = exec_yamls_cmd(compile_template_cmd())
   return jsonify(data=res_dicts)
+
+
+def compile_template_cmd():
+  release_name = request.args.get('release_name', '')
+  return f"{executable} template {release_name} . {fmt_cmd_args()}"
+
+
+def fmt_cmd_args() -> str:
+  return request.args.get('args', '')
 
 
 app.config["cmd"] = ["bash"]
 print(f"[tam_server:server] starting with tam exec '{executable}'")
-app.run(host='0.0.0.0', port=5005, debug=True)
+app.run(host='0.0.0.0', port=5005)
