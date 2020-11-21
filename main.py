@@ -60,14 +60,6 @@ def values():
   return jsonify(data=values_dict)
 
 
-@app.route('/simple_template')
-def simple_template():
-  release_name = request.args.get('release_name', '')
-  res_dicts = exec_yamls_cmd(f"{executable} template {release_name} .")
-  print(res_dicts)
-  return jsonify(data=res_dicts)
-
-
 @app.route('/template', methods=['POST'])
 def template():
   attrs = request.json
@@ -85,6 +77,13 @@ def template():
   res_dicts = exec_yamls_cmd(f"{executable} template {release_name} {args}")
   os.remove(tmp_file_name)
 
+  return jsonify(data=res_dicts)
+
+
+@app.route('/')
+def simple_template():
+  release_name = request.args.get('release_name', '')
+  res_dicts = exec_yamls_cmd(f"{executable} template {release_name} .")
   return jsonify(data=res_dicts)
 
 

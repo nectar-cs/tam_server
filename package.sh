@@ -10,7 +10,7 @@ tar_name=tam_server.tar.gz
 zip_name=tam_server.zip
 
 rm -rf build dist $tar_name $zip_name
-pyinstaller main.py -F
+pyinstaller main.py --static -F
 rm requirements.txt
 
 cp license.txt dist/license.txt
