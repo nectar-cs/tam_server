@@ -27,7 +27,7 @@ def exec_cmd(command: str) -> str:
 
 
 def exec_yaml_cmd(command: str) -> Dict:
-  return yaml.load(exec_cmd(command))
+  return yaml.load(exec_cmd(command), Loader=yaml.FullLoader)
 
 
 def exec_yamls_cmd(command: str) -> List[Dict]:
@@ -41,8 +41,16 @@ def rand_str(string_len=10):
 
 @app.route('/values')
 def values():
-  values_dict = exec_yaml_cmd(f"{executable} values {fmt_cmd_args()}")
+  values_dict = exec_yaml_cmd(f"{executable} values . {fmt_cmd_args()}")
   return jsonify(data=values_dict)
+
+
+@app.route('/info')
+def info():
+  return jsonify(
+    executable=executable,
+    flask_env=app.env
+  )
 
 
 @app.route('/template', methods=['POST'])

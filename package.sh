@@ -1,7 +1,8 @@
 #!/bin/bash
 
-export LC_ALL=C.UTF-8
-export LANG=C.UTF-8
+export LC_ALL="C.UTF-8"
+export LANG="C.UTF-8"
+export FLASK_ENV="production"
 
 pipenv lock -r > requirements.txt
 pip3 install -r requirements.txt
